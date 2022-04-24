@@ -39178,13 +39178,13 @@ let cachedCanvas = null;
         }
     }
     buildORMTexture(material) {
-        const occlusion = material.aoMap?.image;
-        const roughness = material.roughnessMap?.image;
-        const metalness = material.metalnessMap?.image;
+        const occlusion = material.aoMap.image;
+        const roughness = material.roughnessMap.image;
+        const metalness = material.metalnessMap.image;
         if (occlusion === roughness && roughness === metalness) return occlusion;
         if (occlusion || roughness || metalness) {
-            const width = Math.max(occlusion?.width || 0, roughness?.width || 0, metalness?.width || 0);
-            const height = Math.max(occlusion?.height || 0, roughness?.height || 0, metalness?.height || 0);
+            const width = Math.max(occlusion.width || 0, roughness.width || 0, metalness.width || 0);
+            const height = Math.max(occlusion.height || 0, roughness.height || 0, metalness.height || 0);
             const canvas = document.createElement('canvas');
             canvas.width = width;
             canvas.height = height;
