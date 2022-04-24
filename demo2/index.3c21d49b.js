@@ -5244,16 +5244,17 @@ class App {
             var t, r, n;
             if (!this._renderer) return;
             this._rafId = requestAnimationFrame(this.render), (t = this._perfs) == null || t.start();
-            // !this.autoRender && this._skipRender && (e === void 0 || e) || (
-            // )
-            if (this.tar) {
-                let x = Math.sin(this._rafId * 0.05);
-                let y = Math.cos(this._rafId * 0.05);
-                let z = Math.cos(this._rafId * 0.05);
-                this.tar.position.set(x * 800, y * 800, z * 300);
-                this.tar.rotation.set(x, y, z);
+            if (!(!this.autoRender && this._skipRender && (e1 === void 0 || e1))) {
+                if (this.tar) {
+                    let x = Math.sin(this._rafId * 0.05);
+                    let y = Math.cos(this._rafId * 0.05);
+                    let z = Math.cos(this._rafId * 0.05);
+                    this.tar.position.set(x * 800, y * 800, z * 300);
+                    this.tar.rotation.set(x, y, z);
+                }
+                this._controls && (this._controls.enableDamping || this._controls.autoRotate) ? this._skipRender = !this._controls.update() : this._skipRender = !0, this._playmode && !this._playmode.isEnable && this._playmode.activate(), this._scene && this._camera && (this._renderer.autoClear = !1, this._transmissionRenderTarget && (this._renderer.setRenderTarget(this._transmissionRenderTarget), this._renderer.clear(), this._camera.layers.enable(0), this._camera.layers.disable(3), this._renderer.render(this._scene, this._camera), this._renderer.setRenderTarget(null), this._camera.layers.enable(3)), ((r = this._scene.postprocessing) == null ? void 0 : r.enabled) ? (this._renderer.autoClear = !1, this._scene.postprocessing.render()) : (this._renderer.autoClear = !0, this._renderer.render(this._scene, this._camera))), (n = this._perfs) == null || n.end();
+                this._skipRender = true;
             }
-            this._controls && (this._controls.enableDamping || this._controls.autoRotate) ? this._skipRender = !this._controls.update() : this._skipRender = !0, this._playmode && !this._playmode.isEnable && this._playmode.activate(), this._scene && this._camera && (this._renderer.autoClear = !1, this._transmissionRenderTarget && (this._renderer.setRenderTarget(this._transmissionRenderTarget), this._renderer.clear(), this._camera.layers.enable(0), this._camera.layers.disable(3), this._renderer.render(this._scene, this._camera), this._renderer.setRenderTarget(null), this._camera.layers.enable(3)), ((r = this._scene.postprocessing) == null ? void 0 : r.enabled) ? (this._renderer.autoClear = !1, this._scene.postprocessing.render()) : (this._renderer.autoClear = !0, this._renderer.render(this._scene, this._camera))), (n = this._perfs) == null || n.end();
         };
         this.resize = ()=>{
             var e, t, r, n;
@@ -5291,6 +5292,7 @@ class App {
             this.requestRender();
         }, // y_(t.scene, this._scene, this._sharedAssetsManager), 
         this._camera = this._scene.activeCamera;
+        // this._camera.position.set(-2400,2400, 16000)
         // this._camera.position.set(-101.72413600988867, 15.01233653784601, 2000)
         // this._camera.rotation.set(-0.09661105701078047, -0.025910399230104273, -0.0025107621457)
         let n = Object.values(t.frames)[0];
@@ -5319,6 +5321,9 @@ class App {
             wrapS: _three.ClampToEdgeWrapping,
             wrapT: _three.ClampToEdgeWrapping
         }), this._transmissionRenderTarget.depthTexture = new _three.DepthTexture(2048, 2048), this._scene.needsTransmission(this._transmissionRenderTarget)), this._renderer.setPixelRatio(window.devicePixelRatio * 0.6), this._renderer.setSize(this._viewportWidth, this._viewportHeight), this._scene.postprocessing && this._scene.postprocessing.resize(this._viewportWidth, this._viewportHeight), this._renderer.shadowMap.enabled = !0, this._renderer.shadowMap.type = _three.PCFSoftShadowMap, this._renderer.setClearColor(this._scene.bgColor, this._scene.alpha), this._frameView = new _frameViewDefault.default(this._renderer, this._camera, new _three.Vector2(this._viewportWidth, this._viewportHeight), new _three.Vector2(window.innerWidth, window.innerHeight)), this._controls = new _orbitControls.OrbitControls(this._camera, this._renderer.domElement);
+        this._controls.addEventListener('change', ()=>{
+            this._skipRender = false;
+        });
         this._playmode = new _eventDefault.default(this._renderer.domElement, this._scene, this._camera, this), this.resize(), this.render();
     // for (const iterator of this._scene.children) {
     //     console.log(iterator.objectHelper);
@@ -5326,6 +5331,10 @@ class App {
     //         this._scene.add(iterator.objectHelper)
     //     }
     // }
+    // this._camera = this._scene.activeCamera;
+    // this._scene.traverse(t=>{
+    //     t.translateY(300)
+    // })
     // this.tar = this._scene.children[0]
     }
     findObjectById(e) {
@@ -40983,7 +40992,6 @@ class Noise extends _nodeTempDefault.default {
         e.require("uv"), e.requires.uv = [
             !0
         ], e.addFragmentVariable(this.calpha, "float");
-        console.log(_enum.NoiseFunction);
         let o = Object.values(_enum.NoiseFunction)[this.noiseType.value], a = new _function.Function(/*glsl*/ `vec3 ${o}customNoise(float scale, vec3 size, float move, vec2 fA, vec2 fB, vec2 distortion, vec4 colorA, vec4 colorB, vec4 colorC, vec4 colorD, float alpha, out float calpha) {
                 vec3 st = position / size;
 				st /= scale;
